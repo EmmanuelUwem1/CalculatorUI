@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Calculator</title>
+
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: rgb(12, 19, 46);
+        background-image: linear-gradient(
+          45deg,
+          rgb(61, 68, 94),
+          rgb(12, 19, 46)
+        );
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+
+        transition: all 0.5s ease;
+        overflow-y: scroll;
+        width: 100%;
+      }
+      body.brightMode {
+        background-color: rgb(249, 251, 255);
+        background: linear-gradient(
+          45deg,
+          rgb(249, 251, 255),
+          rgb(203, 212, 250)
+        );
+      }
+
+      main {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .calculator {
+        border: 2px solid rgba(0, 5, 26, 0.363);
+        /* min-height: 34rem; */
+        /* height: 40rem; */
+        border-radius: 3rem;
+        /* background: #f5faffe1; */
+        background: rgb(13, 15, 32);
+        width: 24rem;
+        transform: scale(1);
+        transition: all 0.4s ease;
+        padding: 1rem;
+        position: relative;
+        overflow-x: hidden;
+        margin: auto;
+      }
+      .calculator.brightMode {
+        border: none;
+        /* height: 100vh; */
+        border-radius: 3rem;
+        /* background: #f5faffe1; */
+        /* background: rgb(177, 188, 243); */
+        background: rgba(231, 241, 250, 0.863);
+        width: 24rem;
+        transform: scale(1);
+        transition: all 0.4s ease;
+        padding: 1rem;
+        position: relative;
+        overflow-x: hidden;
+        box-shadow: 0px 0px 8px 1px gray;
+      }
+
+      .top {
+        display: flex;
+        justify-content: left;
+        margin-bottom: 3vh;
+        /* border: 2px solid red; */
+      }
+      .top > span {
+        height: 3.5rem;
+        width: 4rem;
+        background: rgb(35, 35, 59);
+        border-radius: 2rem;
+        position: relative;
+        transition: all 0.4s ease;
+        cursor: pointer;
+      }
+
+      .top > span:active {
+        transform: scale(0.9);
+      }
+
+      .top > span > span {
+        height: 2rem;
+        width: 2rem;
+        background: rgb(35, 35, 59);
+        position: absolute;
+        bottom: 0;
+        transition: all 0.4s ease;
+
+        /* left: 0; */
+      }
+
+      .top.brightMode > span {
+        background: rgb(213, 213, 241);
+      }
+
+      .top.brightMode > span > span {
+        background: rgb(213, 213, 241);
+      }
+
+      .displays {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        height: 6.5rem;
+        position: relative;
+        /* border: 2px solid blue; */
+      }
+
+      .smallDisp {
+        text-align: right;
+        font-size: 1.3rem;
+        color: rgba(173, 173, 173, 0.5);
+        /* border: 2px solid red; */
+        /* padding-right: 1rem; */
+        height: 2rem;
+        width: 400rem;
+        position: absolute;
+        right: 0;
+        top: 0;
+        /* overflow: hidden; */
+      }
+      .smallDisp.brightMode {
+        color: rgba(73, 73, 73, 0.596);
+      }
+      .displays::before {
+        content: "";
+        position: absolute;
+        left: -1rem;
+        height: 100%;
+        width: 1rem;
+        background: rgb(13, 15, 32);
+        transition: all 0.4s ease;
+
+        z-index: 100;
+      }
+      .displays.brightMode::before {
+        background: rgba(231, 241, 250, 0.863);
+      }
+      .largeDisp {
+        text-align: right;
+        font-size: 3rem;
+        color: rgba(240, 248, 255, 0.925);
+        margin-bottom: 2vh;
+        /* border: 2px solid yellow; */
+        height: 4rem;
+        overflow: hidden;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
+
+      .largeDisp.brightMode {
+        color: rgba(0, 0, 0, 0.925);
+      }
+
+      .buttons {
+        /* border: 2px solid green; */
+        /* height: 65vh; */
+
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        gap: 0.6rem;
+        width: 100%;
+        height: 100%;
+        /* gap: .5rem; */
+      }
+      .button {
+        grid-column: span 1;
+      }
+
+      .buttons button {
+        min-height: 4.5rem;
+        /* width: 4.5rem;  */
+        border: none;
+        box-shadow: inset 0px 0px 4px 2px rgb(42, 40, 63);
+        border-radius: 1.5rem;
+        background: rgb(30, 29, 48);
+        color: rgba(240, 248, 255, 0.842);
+        font-size: 1.4rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .buttons button:hover {
+        background: rgb(69, 68, 104);
+      }
+      .buttons button:active {
+        transform: scale(0.9);
+        box-shadow: none;
+      }
+
+      .buttons.brightMode button {
+        color: rgba(0, 0, 0, 0.918);
+      }
+
+      .buttons.brightMode .button {
+        background: rgba(231, 241, 250, 0.863);
+        box-shadow: inset 0px 0px 4px 2px rgba(250, 253, 255, 0.863),
+          0px 0px 6px 2px rgba(128, 128, 128, 0.568);
+      }
+      .buttons > div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      button.length {
+        /* width: 10.5rem; */
+        grid-column: span 2;
+      }
+      .buttons.brightMode button.length {
+        background: rgba(231, 241, 250, 0.863);
+        box-shadow: inset 0px 0px 4px 2px rgba(250, 253, 255, 0.863),
+          0px 0px 6px 2px rgba(128, 128, 128, 0.568);
+      }
+      button.light {
+        background: rgba(102, 100, 117, 0.795);
+        box-shadow: inset 0px 0px 5px 2px rgba(112, 109, 128, 0.76);
+      }
+      button.light:hover {
+        background: rgba(141, 139, 156, 0.795);
+      }
+      .buttons button:active {
+        transform: scale(0.9);
+        box-shadow: none;
+      }
+
+      .buttons.brightMode button.light {
+        background: rgb(183, 182, 196);
+        box-shadow: inset 0px 0px 6px 4px rgb(172, 170, 170),
+          0px 0px 6px 2px rgba(202, 202, 202, 0.568);
+      }
+      button.orange {
+        background: rgba(245, 107, 15, 0.795);
+        box-shadow: inset 0px 0px 5px 2px rgba(255, 117, 25, 0.795);
+      }
+      button.orange:hover {
+        background: rgba(255, 117, 25, 0.795);
+      }
+      button.orange:active {
+        transform: scale(0.9);
+        box-shadow: none;
+      }
+
+      .buttons.brightMode button.orange {
+        background: rgb(255, 81, 0);
+        box-shadow: inset 0px 0px 5px 2px rgb(255, 127, 68),
+          0px 0px 6px 2px rgba(211, 129, 115, 0.568);
+        color: white;
+      }
+
+      @media all and (max-width: 768px) {
+        .calculator {
+          width: 24rem;
+          /* height: 40rem; */
+        }
+        .buttons {
+          height: 68%;
+        }
+      }
+      @media all and (max-width: 440px) {
+      }
+
+      @media all and (max-width: 400px) {
+        * {
+          font-size: 4vw;
+        }
+        .calculator {
+          width: 100%;
+          margin: auto;
+        }
+        .length {
+          min-height: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body id="ui">
+    <header></header>
+
+    <main>
+      <div class="calculator" id="ui">
+        <div class="top" id="ui">
+          <span>
+            <span></span>
+          </span>
+        </div>
+
+        <div class="displays" id="ui">
+          <div class="smallDisp" id="ui">4900 + 15910</div>
+          <div class="largeDisp" id="ui">20,810</div>
+        </div>
+
+        <div class="buttons" id="ui">
+          <!-- <div class="firstrow"> -->
+          <button class="light" id="CLS">C</button>
+          <button class="light">+/-</button>
+          <button class="light" id="button">%</button>
+          <button class="orange" id="button">/</button>
+          <!-- </div> -->
+
+          <!-- <div class="secondrow"> -->
+
+          <button id="button" class="button">7</button>
+          <button id="button" class="button">8</button>
+          <button id="button" class="button">9</button>
+          <button class="orange" id="button">*</button>
+          <!-- </div> -->
+
+          <!-- <div class="thirdrow"> -->
+          <button id="button" class="button">4</button>
+          <button id="button" class="button">5</button>
+          <button id="button" class="button">6</button>
+          <button class="orange" id="button">-</button>
+          <!-- </div> -->
+
+          <!-- <div class="fourthrow"> -->
+          <button id="button" class="button">1</button>
+          <button id="button" class="button">2</button>
+          <button id="button" class="button">3</button>
+          <button class="orange" id="button">+</button>
+          <!-- </div> -->
+
+          <!-- <div class="last"> -->
+          <button class="length">0</button>
+          <button id="button" class="button">.</button>
+          <button id="equals" class="orange">=</button>
+          <!-- </div> -->
+        </div>
+      </div>
+    </main>
+
+    <footer></footer>
+    <!-- <script src="index.js" type="text/javascript"></script> -->
+    <script>
+      // My Javascript for new Calaculator Project Functionality
+
+      const smallDisplay = document.querySelector(".smallDisp");
+      const largeDisplay = document.querySelector(".largeDisp");
+      smallDisplay.textContent = "";
+      largeDisplay.textContent = "";
+      var buttons = document.querySelectorAll("#button");
+      buttons.forEach((button) => {
+        // console.log(button.textContent);
+
+        button.addEventListener("click", () => {
+          smallDisplay.textContent += button.textContent;
+          largeDisplay.textContent = "";
+        });
+      });
+
+      // code for for functionailty CLS button
+
+      document.getElementById("CLS").addEventListener("click", () => {
+        smallDisplay.textContent = smallDisplay.textContent.slice(0, -1);
+        largeDisplay.textContent = "";
+      });
+
+      // Code for  Functionality of #equals
+      var answer;
+
+      document.getElementById("equals").addEventListener("click", () => {
+        try {
+          answer = eval(smallDisplay.innerHTML);
+          largeDisplay.textContent = answer;
+        } catch (error) {
+          largeDisplay.textContent = "error";
+        }
+
+        // if(answer.length == 4){
+        //     answer =
+        // }
+      });
+
+      // Code for Functionality of bright and dark modes
+
+      document.querySelector(".top > span").addEventListener("click", () => {
+        var UiElements;
+        UiElements = document.querySelectorAll("#ui");
+        UiElements.forEach((element) => {
+          element.classList.toggle("brightMode");
+        });
+      });
+    </script>
+  </body>
+</html>
